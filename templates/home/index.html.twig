@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello{% endblock %}
+
+{% block body %}
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+    </style>
+    <div class="d-flex justify-content-center">
+        <div class="row">
+            <table>
+                <tr>
+                    <th>Nummer</th>
+                    <th>Model</th>
+                    <th>Type</th>
+                    <th>Prijs (euro)</th>
+                </tr>
+                {%for auto in autos  %}
+                    <tr>
+                        <td>{{ auto.id }}</td>
+                        <td>{{ auto.model }}</td>
+                        <td>{{ auto.type }}</td>
+                        <td>{{ auto.prijs }}</td>
+                        <td><a href="{{ path("details",{id:auto.id}) }}">details</a></td>
+                        <td><a href="{{ path("update",{id:auto.id}) }}">update</a></td>
+                        <td><a href="{{ path("delete",{id:auto.id}) }}">delete</a></td>
+                    </tr>
+                {% endfor %}
+            </table>
+            <a href="{{ path("insert") }}">Insert</a>
+        </div>
+    </div>
+{% endblock %}
