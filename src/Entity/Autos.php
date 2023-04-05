@@ -27,6 +27,7 @@ class Autos
     private ?int $gewicht = null;
 
     #[ORM\Column]
+    #[Assert\GreaterThan(10000)]
     private ?int $prijs = null;
 
     #[ORM\Column]
