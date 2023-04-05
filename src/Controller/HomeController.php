@@ -6,6 +6,7 @@ use App\Entity\Autos;
 use App\Form\InsertType;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -40,10 +41,23 @@ class HomeController extends AbstractController
     }
 
     #[Route('/insert', name: "insert")]
-    public function insert(ManagerRegistry $doctrine): Response
+    public function insert(ManagerRegistry $doctrine, Request $request): Response
     {
         $auto=new Autos();
         $form=$this->createForm(InsertType::class,$auto);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $auto=$form->getData();
+
+            $em->persist($auto);
+
+            $em->flush();
+
+            $this->redirectToRoute('home');
+        }
 
        // $autos=$doctrine->getRepository(Autos::class)->findAll();
         return $this->renderForm('home/insert.html.twig',['form'=>$form]);
