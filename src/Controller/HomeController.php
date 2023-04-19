@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Autos;
 use App\Form\InsertType;
 use App\Repository\AutosRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,25 +22,40 @@ class HomeController extends AbstractController
         return $this->render('home/index.html.twig',['autos'=>$autos]);
     }
 
-    #[Route('/details', name: "details")]
+    #[Route('/details/{id}', name: "details")]
     public function details(ManagerRegistry $doctrine, int $id): Response
     {
         $auto=$doctrine->getRepository(Autos::class)->find($id);
         return $this->render('home/details.html.twig',['auto'=>$auto]);
     }
 
-    #[Route('/update', name: "update")]
-    public function update(ManagerRegistry $doctrine, int $id): Response
+    #[Route('/update/{id}', name: "update")]
+    public function update(Request $request,EntityManagerInterface $entityManager, int $id): Response
     {
-        $auto=$doctrine->getRepository(Autos::class)->find($id);
-        return $this->render('home/update.html.twig',['auto'=>$auto]);
+        $auto=$entityManager->getRepository(Autos::class)->find($id);
+
+        $form=$this->createForm(InsertType::class,$auto);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted()) {
+            $auto=$form->getData();
+            $entityManager->persist($auto);
+            $entityManager->flush();
+            return $this->redirectToRoute('home');
+        }
+        return $this->renderForm('home/update.html.twig', [
+            'UpdateForm'=>$form
+        ]);
     }
 
-    #[Route('/delete', name: "delete")]
-    public function delete(ManagerRegistry $doctrine, int $id): Response
+    #[Route('/delete/{id}', name: "delete")]
+    public function delete(Request $request,EntityManagerInterface $entityManager, int $id): Response
     {
-        $auto=$doctrine->getRepository(Autos::class)->find($id);
-        return $this->render('home/delete.html.twig',['auto'=>$auto]);
+        $auto=$entityManager->getRepository(Autos::class)->find($id);
+
+            $entityManager->remove($auto);
+            $entityManager->flush();
+            return $this->redirectToRoute('home');
     }
 
     #[Route('/login', name: "login")]
@@ -73,7 +89,8 @@ class HomeController extends AbstractController
 
             $autosRepository->save($auto);
 
-            $this->redirectToRoute('home');
+            return $this->redirectToRoute('home');
+
         }
 
        // $autos=$doctrine->getRepository(Autos::class)->findAll();

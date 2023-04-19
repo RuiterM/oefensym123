@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello{% endblock %}
+
+{% block body %}
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #ff0000;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+    </style>
+    <div class="d-flex justify-content-center">
+        <div class="row">
+            <table>
+                <tr>
+                    <th>Nummer</th>
+                    <th>Model</th>
+                    <th>Type</th>
+                    <th>Prijs (euro)</th>
+                    <th>Kleur</th>
+                    <th>Gewicht</th>
+                    <th>Voorraad</th>
+
+                </tr>
+                    <tr>
+                        <td>{{ auto.id }}</td>
+                        <td>{{ auto.model }}</td>
+                        <td>{{ auto.type }}</td>
+                        <td>€{{ auto.prijs }}</td>
+                        <td>{{ auto.kleur }}</td>
+                        <td>{{ auto.gewicht }}</td>
+                        <td>{{ auto.voorraad }}</td>
+                        <td><a href="{{ path("home") }}">terug</a></td>
+                    </tr>
+            </table>
+        </div>
+    </div>
+{% endblock %}
